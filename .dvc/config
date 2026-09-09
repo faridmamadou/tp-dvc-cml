@@ -1,0 +1,4 @@
+[core]
+    remote = monremote
+['remote "monremote"']
+    url = /tmp/dvc-remote-storage/

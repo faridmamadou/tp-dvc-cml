@@ -1,0 +1,42 @@
+name: CML Pipeline
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  train-and-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv
+        uses: iterative/setup-uv@v3
+        with:
+          enable-cache: true
+      
+      - name: Install Python and dependencies
+        run: |
+          uv python install 3.11
+          uv sync --frozen
+
+      - name: Run DVC pipeline
+        run: |
+          uv run dvc repro
+
+      - name: Generate report
+        uses: iterative/setup-cml@v2
+
+      -  name: Publier le rapport
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Résultats du pipeline ML" > report.md
+          echo "" >> report.md
+          cat metrics.json >> report.md
+          echo "" >> report.md
+          echo "![Matrice de confusion](./confusion_matrix.png)" >> report.md
+          cml comment create report.md
