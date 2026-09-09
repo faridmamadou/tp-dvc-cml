@@ -1,0 +1,34 @@
+
+stages:
+  prepare:
+    cmd: uv run python3 src/prepare.py
+    deps:
+    - data/iris.csv
+    - src/prepare.py
+    params:
+    - prepare.seed
+    - prepare.split
+    outs:
+    - data/test.csv
+    - data/train.csv
+  train:
+    cmd: uv run python3 src/train.py
+    deps:
+    - data/train.csv
+    - src/train.py
+    params:
+    - train.max_depth
+    - train.n_estimators
+    outs:
+    - model.pkl
+  evaluate:
+    cmd: uv run python3 src/evaluate.py
+    deps:
+    - data/test.csv
+    - model.pkl
+    - src/evaluate.py
+    outs:
+    - confusion_matrix.png
+    metrics:
+    - metrics.json:
+        cache: false

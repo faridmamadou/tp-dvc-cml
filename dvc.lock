@@ -1,0 +1,70 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: uv run python3 src/prepare.py
+    deps:
+    - path: data/iris.csv
+      hash: md5
+      md5: 4d301abed5efe50eccda350cde38e0eb
+      size: 2777
+    - path: src/prepare.py
+      hash: md5
+      md5: c2feec5e8905cc5b4ffd873d785dd493
+      size: 426
+    params:
+      params.yaml:
+        prepare.seed: 42
+        prepare.split: 0.2
+    outs:
+    - path: data/test.csv
+      hash: md5
+      md5: 32ecd1b41ec3a322ebd7d1cea0ab14c9
+      size: 617
+    - path: data/train.csv
+      hash: md5
+      md5: 20a771675f974006d30c2926ff658bea
+      size: 2237
+  train:
+    cmd: uv run python3 src/train.py
+    deps:
+    - path: data/train.csv
+      hash: md5
+      md5: 20a771675f974006d30c2926ff658bea
+      size: 2237
+    - path: src/train.py
+      hash: md5
+      md5: f44ac5334240273a80ee473aa0b22970
+      size: 460
+    params:
+      params.yaml:
+        train.max_depth: 5
+        train.n_estimators: 100
+    outs:
+    - path: model.pkl
+      hash: md5
+      md5: c96c3251394e65bff806d1a8bba5f8bb
+      size: 166072
+  evaluate:
+    cmd: uv run python3 src/evaluate.py
+    deps:
+    - path: data/test.csv
+      hash: md5
+      md5: 32ecd1b41ec3a322ebd7d1cea0ab14c9
+      size: 617
+    - path: model.pkl
+      hash: md5
+      md5: c96c3251394e65bff806d1a8bba5f8bb
+      size: 166072
+    - path: src/evaluate.py
+      hash: md5
+      md5: e14d5c9b7e046dc037383e9357cef48c
+      size: 635
+    outs:
+    - path: confusion_matrix.png
+      hash: md5
+      md5: 8dd11ccc970317e962e93f2ad617039c
+      size: 14032
+    - path: metrics.json
+      hash: md5
+      md5: 4958cbd40c01f674fd4aa264f81684ca
+      size: 40
