@@ -1,8 +1,7 @@
 name: CML Pipeline
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: read
@@ -13,11 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up uv
         uses: iterative/setup-uv@v3
         with:
           enable-cache: true
-      
+
       - name: Install Python and dependencies
         run: |
           uv python install 3.11
@@ -30,7 +30,7 @@ jobs:
       - name: Generate report
         uses: iterative/setup-cml@v2
 
-      -  name: Publier le rapport
+      - name: Publier le rapport
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
