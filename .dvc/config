@@ -1,4 +1,5 @@
 [core]
-    remote = monremote
-['remote "monremote"']
-    url = /tmp/dvc-remote-storage/
+    remote = r2-storage
+['remote "r2-storage"']
+    url = s3://tp-dvc-cml
+    endpointurl = https://7227316364683f0a51b7f24a6d46ebe8.r2.cloudflarestorage.com
