@@ -23,10 +23,15 @@ jobs:
           uv python install 3.11
           uv sync --frozen
 
-      - name: Run DVC pipeline
-        run: |
-          uv run dvc repro
+      - name: Pull DVC data
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: uv run dvc pull
 
+      - name: Run DVC pipeline
+        run: uv run dvc repro
+        
       - name: Generate report
         uses: iterative/setup-cml@v2
 
