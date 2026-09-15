@@ -31,7 +31,7 @@ jobs:
 
       - name: Run DVC pipeline
         run: uv run dvc repro
-        
+
       - name: Generate report
         uses: iterative/setup-cml@v2
 
@@ -44,4 +44,12 @@ jobs:
           cat metrics.json >> report.md
           echo "" >> report.md
           echo "![Matrice de confusion](./confusion_matrix.png)" >> report.md
+          cml comment create report.md
+
+      - name: Comparer avec main
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin main
+          uv run dvc metrics diff main --show-md >> report.md
           cml comment create report.md
